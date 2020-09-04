@@ -1,5 +1,6 @@
 from util import generate_random_int_list
 
+# Diagnostic #2: complete the methods calculate_mean and calculate_std_dev
 
 class StatsPackage:
 

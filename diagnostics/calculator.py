@@ -1,5 +1,8 @@
 from enum import Enum
 
+# Diagnostic #3
+# Complete the implementation of the CalculatorPacket class; specifically the perform_calcluation method
+
 class Operation(Enum):
     ADD = 1
     SUBTRACT = 2

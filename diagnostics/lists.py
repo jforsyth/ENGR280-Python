@@ -1,6 +1,8 @@
 from util import generate_random_int_list
 
 
+#Diagnostic #1: Complete the methods student_min, student_max, and runner_up
+
 # write a function to determine the minimum value in the list
 # Don't use the min() function. That's too easy :)
 def student_min(nums):
