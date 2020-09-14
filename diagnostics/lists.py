@@ -6,21 +6,32 @@ from util import generate_random_int_list
 # write a function to determine the minimum value in the list
 # Don't use the min() function. That's too easy :)
 def student_min(nums):
-    ##### Your code here #####
-    return
+    minVal = nums[0]
+    for i in nums:
+       if i < minVal:
+           minVal = i
+    return minVal
 
 
 # write a function to determine the maximum value in the list
 # Don't use the max() function. That's too easy :)
 def student_max(nums):
-    ##### Your code here #####
-    return
+    maxVal = nums[0]
+    for i in nums:
+        if i > maxVal:
+            maxVal = i
+    return maxVal
 
 
 # write a function that determines the 2nd highest value in the list. Not #1, but the runner up :)
 def runner_up(nums):
-    ##### Your code here #####
-    return
+    maxVal = nums[0]
+    runUp = nums[1]
+    for i in nums:
+        if i > maxVal:
+            runUp = maxVal
+            maxVal = i
+    return runUp
 
 
 if __name__ == "__main__":

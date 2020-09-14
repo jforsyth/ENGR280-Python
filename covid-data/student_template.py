@@ -1,20 +1,38 @@
 from file_utils import loadWithJSON
+from covid_dataset import CovidDataset
+from parse_nyt_data import ParseNytData
+import constants
 
+# Dictionary of names of counties and corresponding filenames with county data.
+# Edit update_county_data to analyze data from additional counties
+files = loadWithJSON('counties.json') 
 
-## Will load all Harrisonburg and Rockingham data into a list of lists
-## Each element in the main list will contain a list of two items, the str:date and int:cases
-harrisonburg_data = loadWithJSON('harrisonburg.json')
-rockingham_data = loadWithJSON('rockingham.json')
+# Make dictionary with key="COUNTY_NAME" and value=COVID_DATASET_OBJECT
+data = {}
+for i in files:
+    try:
+        ParseNytData(i[1],i[2])
+        data[i[0]] = CovidDataset(loadWithJSON(i[2]))
+    except:
+        print("\nFile %s does not exist" % (i[2]))
+    
+print('\nWhen was the first positive COVID cases in each county?\n')
 
-## Print all elements in the list as an example
-for data in harrisonburg_data:
-    date = data[0]
-    cases = data[1]
-    print('On '+date + ' there were '+ str(cases) +' cases in Harrisonburg')
+for key in data:
+    print("%s: %s" % (key, data[key].get_first_positive()))
 
-print('When was the first positive COVID case in Rockingham County and Harrisonburg?')
+print('\nWhat day was the maximum number of cases recorded in each county?\n')
 
-print('What day was the maximum number of cases recorded in Harrisonburg and Rockingham County?')
+for key in data:
+    print("%s: %s" % (key, data[key].get_max_case_day()))
 
-print('What was the worst week in the city/county for new COVID cases? '
-      'When was the rise in cases the fastest over a seven day period?')
+print('\nWhat was the worst week in each city/county for new COVID cases? '
+      'When was the rise in cases the fastest over a seven day period?'
+      '\n')
+
+for key in data:
+    print("%s: %s through %s" % (key, 
+        data[key].get_worst_n_days(constants.DAYS_IN_WEEK)[0], 
+        data[key].get_worst_n_days(constants.DAYS_IN_WEEK)[1]))
+
+print('\n')

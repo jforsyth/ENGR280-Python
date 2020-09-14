@@ -17,8 +17,18 @@ class CalculatorPacket:
 
     #Perform the calculation inputting into the object. If the calculation is invalid, return None
     def perform_calculation(self):
-        # your code here :)
-        return
+        result = None
+        values = [item for item in Operation] # List of supported enums
+        if self.operator in values: # Checks if operator in enums
+            if self.operator.value == 1:
+                result = self.A + self.B
+            elif self.operator.value == 2:
+                result = self.A - self.B
+            elif self.operator.value == 3:
+                result = self.A * self.B
+            elif self.operator.value == 4:
+                result = self.A / self.B
+        return result
 
 
 

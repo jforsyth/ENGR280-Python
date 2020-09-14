@@ -1,4 +1,5 @@
 from util import generate_random_int_list
+from statistics import stdev, mean
 
 # Diagnostic #2: complete the methods calculate_mean and calculate_std_dev
 
@@ -11,17 +12,23 @@ class StatsPackage:
     # complete the method implementation to calculate the mean of an unknown list
     def calculate_mean(self, nums):
 
-        ##### Your code here #####
+        # return sum(nums)/len(nums) feels like cheating
 
-        return
+        list_sum = 0
+        for i in nums:
+            list_sum += i
+
+        return list_sum/len(nums)
 
     # complete the method implementation to calculate the standard deviation
     # https://mathworld.wolfram.com/StandardDeviation.html
     def calculate_std_dev(self, nums):
 
-        ##### Your code here #####
+        nums_mean = self.calculate_mean(nums)
 
-        return
+        nums = [(i - nums_mean) ** 2 for i in nums]
+
+        return self.calculate_mean(nums)**0.5
 
 
 if __name__ == "__main__":

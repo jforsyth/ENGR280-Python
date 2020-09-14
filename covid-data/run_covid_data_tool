@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# Author: Stephen Mitchell
+# Date: 09/13/2020
+#
+# Updates us-counties.csv if it has been longer than 24 hours since it
+# has been downloaded; Splits data for counties into their own separate 
+# csv files; Uses regular expressions and sed to convert csvs 
+# into valid json.
+#
+# TODO: Have a counties.json that both bash and Python read from for which
+#       counties to download/display info on 
+
+source scripts/parse_nyt_data
+source scripts/file_utils
+
+function update_covid_data {
+
+    # Checks if it has been more than 24 hours since data was last downloaded
+    if file_older_than_24hrs "us-counties.csv"
+    then
+        printf "\nLonger than 24 hours since last update. Downloading new data... \n\n"
+
+        # Download new data into a csv
+        curl https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv > us-counties.csv
+
+        printf "\n"
+
+        ../env/bin/python parse_nyt_data.py
+    else
+        printf "\n---------- Data is up to date ----------\n"
+    fi
+}
+
+# Update data if necessary
+update_covid_data
+
+# Run python tool
+../env/bin/python student_template.py
