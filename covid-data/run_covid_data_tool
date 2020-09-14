@@ -17,12 +17,12 @@ source scripts/file_utils
 function update_covid_data {
 
     # Checks if it has been more than 24 hours since data was last downloaded
-    if file_older_than_24hrs "us-counties.csv"
+    if file_older_than_24hrs "county_data/us-counties.csv"
     then
         printf "\nLonger than 24 hours since last update. Downloading new data... \n\n"
 
         # Download new data into a csv
-        curl https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv > us-counties.csv
+        curl https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv > county_data/us-counties.csv
 
         printf "\n"
 

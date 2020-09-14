@@ -12,7 +12,7 @@ data = {}
 for i in files:
     try:
         ParseNytData(i[1],i[2])
-        data[i[0]] = CovidDataset(loadWithJSON(i[2]))
+        data[i[0]] = CovidDataset(loadWithJSON('county_data/' + i[2]))
     except:
         print("\nFile %s does not exist" % (i[2]))
     

@@ -25,10 +25,10 @@ def ParseNytData(county_name, output_file):
     """
 
     # Open counties.csv for reading
-    data = open('us-counties.csv', "r")
+    data = open('county_data/us-counties.csv', "r")
 
     # Open COUNTY_NAME.json for writing
-    output = open(output_file, "w+")
+    output = open('county_data/' + output_file, "w+")
 
     # Compile regular expression
     reg = re.compile(r"(\d+-\d+-\d+)," + county_name + r",\d+,(\d+),\d+")
