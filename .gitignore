@@ -135,5 +135,5 @@ dmypy.json
 # Custom settings
 
 covid-data/county_data/*.json
-!covid-data/counties.json
+!covid-data/county_data/counties.json
 covid-data/county_data/*.csv
