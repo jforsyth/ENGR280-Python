@@ -1,5 +1,3 @@
-from file_utils import loadWithJSON
-import constants
 
 class CovidDataset:
     """

@@ -1,7 +1,5 @@
-from file_utils import loadWithJSON
+from utils import loadWithJSON, parse_nyt_data, constants
 from models import CovidDataset
-from parse_nyt_data import ParseNytData
-import constants
 
 # Dictionary of names of counties and corresponding filenames with county data.
 # Edit update_county_data to analyze data from additional counties
@@ -11,7 +9,7 @@ files = loadWithJSON('county_data/counties.json')
 data = {}
 for i in files:
     try:
-        ParseNytData(i[1],i[2])
+        parse_nyt_data(i[1],i[2])
         data[i[0]] = CovidDataset(loadWithJSON('county_data/' + i[2]))
     except:
         print("\nFile %s does not exist" % (i[2]))

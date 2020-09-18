@@ -1,7 +1,6 @@
 import pickle
 import json
 
-
 def saveWithPickle(fileName, obj):
     file = open(fileName, "w")
     pickle.dump(obj, file)
@@ -26,3 +25,5 @@ def loadWithJSON(fileName):
     obj = json.load(file)
     file.close()
     return obj
+
+    

@@ -1,14 +1,6 @@
 import re
-from file_utils import loadWithJSON
 
-"""
-
-Example:
-    $ python parse_nyt_data.py "Harrisonburg city,Virginia" "harrisonburg.json"
-
-"""
-
-def ParseNytData(county_name, output_file): 
+def parse_nyt_data(county_name, output_file): 
     """
     Translate us-counties.csv into output_file.json
     containing data from the specified county
@@ -54,12 +46,3 @@ def ParseNytData(county_name, output_file):
 
     data.close()
     output.close()
-
-
-
-
-
-if __name__ == "__main__":
-    counties = loadWithJSON('county_data/counties.json')
-    for i in counties:
-        ParseNytData(i[1], i[2])
