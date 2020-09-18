@@ -53,11 +53,3 @@ class CovidDataset:
 
         return (str(self.data[worst_seven_days_range[0]][0]),
             str(self.data[worst_seven_days_range[1]][0]))
-
-
-
-if __name__ == "__main__":
-    harrisonburg_data = loadWithJSON('harrisonburg.json')
-    print(CovidDataset(harrisonburg_data).
-        get_worst_n_days(constants.DAYS_IN_WEEK))
-    

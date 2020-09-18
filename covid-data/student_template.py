@@ -1,11 +1,11 @@
 from file_utils import loadWithJSON
-from covid_dataset import CovidDataset
+from models import CovidDataset
 from parse_nyt_data import ParseNytData
 import constants
 
 # Dictionary of names of counties and corresponding filenames with county data.
 # Edit update_county_data to analyze data from additional counties
-files = loadWithJSON('counties.json') 
+files = loadWithJSON('county_data/counties.json') 
 
 # Make dictionary with key="COUNTY_NAME" and value=COVID_DATASET_OBJECT
 data = {}

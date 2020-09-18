@@ -60,6 +60,6 @@ def ParseNytData(county_name, output_file):
 
 
 if __name__ == "__main__":
-    counties = loadWithJSON('counties.json')
+    counties = loadWithJSON('county_data/counties.json')
     for i in counties:
         ParseNytData(i[1], i[2])

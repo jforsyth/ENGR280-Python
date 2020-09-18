@@ -11,7 +11,6 @@
 # TODO: Have a counties.json that both bash and Python read from for which
 #       counties to download/display info on 
 
-source scripts/parse_nyt_data
 source scripts/file_utils
 
 function update_covid_data {
