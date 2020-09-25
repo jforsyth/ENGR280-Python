@@ -86,7 +86,7 @@ averages = numpy.convolve(harrisonburg_delta, [1,1,1,1,1,1,1])
 
 numpy_method_averages = numpy.argmax(averages)
 numpy_method_totals = averages[numpy_method_averages]
-numpy_method_date = harrisonburg_data[numpy_method_averages + 1]
+numpy_method_date = harrisonburg_data[numpy_method_averages + 1][0]
 
 bad_method_averages = dumb_moving_average(harrisonburg_delta)
 bad_method_date = harrisonburg_data[bad_method_averages[0]]
