@@ -12,7 +12,7 @@ def dumb_moving_average(thing):
                   max=value
                   index=i+7
 
-      return (index,value)
+      return (index,max)
 
 ## Will load all Harrisonburg and Rockingham data into a list of lists
 ## Each element in the main list will contain a list of two items, the str:date and int:cases
