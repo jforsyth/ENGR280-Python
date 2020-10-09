@@ -1,10 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 ##### Replicate these lines in Python console
 
+BASE_DIR = Path(__file__).resolve().parent
+
 # read in file with better column names
-signal = pd.read_csv('samples.csv', names=['time', 'ml2', 'v5'])
+signal = pd.read_csv(BASE_DIR / 'samples.csv', names=['time', 'ml2', 'v5'])
 
 # drop the bad data
 signal = signal.drop([0, 1])
