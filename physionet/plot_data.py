@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
-from scipy.signal import argrelextrema
+from scipy.signal import argrelextrema, butter, lfilter, freqz
 import matplotlib.pyplot as plt
 from pathlib import Path
+import find_extrema
 
 # Replicate these lines in Python console
 
 BASE_DIR = Path(__file__).resolve().parent
-ORDER = 100
-MIN_SPACING = 10
+SAMPLING_RATE = 250 #hz
 
 # read in file with better column names
 signal = pd.read_csv(BASE_DIR / 'samples.csv', names=['time', 'ml2', 'v5'])
@@ -19,34 +19,35 @@ signal = signal.drop([0, 1])
 # set the correct types
 signal = signal.astype({'ml2': 'float32', 'v5': 'float32'})
 
-data_array = np.array(signal['v5'])
+raw = signal['v5'].to_numpy()
 
-# Find relative extrema on the dataset (points that are higher than n points to their left and right)
-data_peaks = argrelextrema(data_array, np.greater_equal, order=ORDER)[0]
+# Center data at zero instead of 5 or whatever it's normally at
+raw = raw - raw[0]
 
-x = []
-y = []
+### pass data through LOW PASS FILTER (fs=250Hz, fc=15, N=6) ###
+low_pass = np.convolve(raw, [0.023834522, 0.093047634, 0.232148599, 0.301938491, 0.232148599, 0.093047634, 0.023834522])
 
-for i in range(0, len(data_peaks)):
+### pass data through HIGH PASS FILTER (fs=250Hz, fc=5Hz, N=6) to create BAND PASS result ###
+band_pass = np.convolve(low_pass, [-0.000798178, -0.003095487,-0.007692586, 0.989209446, -0.007692586, -0.003095487, -0.000798178])
 
-    # If not the last data point
-    if i != len(data_peaks) - 1:
+# Finds diff 
+diff = np.diff(band_pass)
 
-        # Only include point if it's at least 10 points away from last peak
-        # This avoids heartbeats with small plateaus at the top being marked twice
-        if data_peaks[i+1] - data_peaks[i] > MIN_SPACING:
-            x.append(data_peaks[i]+2)  # +2 to adjust for removed points
-            y.append(data_array[data_peaks[i]])
+# Squares diff
+squared = diff * diff 
 
-    # Mark the last point normally
-    else:
-        x.append(data_peaks[i]+2)
-        y.append(data_array[data_peaks[i]])
+# Applys a moving average
+weights = np.ones(38)
+movingAvg = np.convolve(squared, weights)
 
-print(len(x))
+# Finds extrema
+x,y = find_extrema.find_extrema(movingAvg, SAMPLING_RATE)
+
+# Number of heartbeats
+print(f"{len(x)} heartbeats detected")
 
 # plot the data
-signal['v5'].plot()
+plt.plot(movingAvg)
 
 plt.scatter(x, y, c='orange', s=100)
 # now show the plot for real
