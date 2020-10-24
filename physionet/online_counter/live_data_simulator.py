@@ -20,4 +20,3 @@ class DataSimulator():
         refresh_rate = 1 / sampling_rate 
         for i in self.raw:
             queue.put(i)
-            time.sleep(refresh_rate)
