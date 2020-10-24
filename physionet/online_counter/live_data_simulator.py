@@ -5,7 +5,7 @@ import pandas as pd
 class DataSimulator():
     def __init__(self, filename):
         BASE_DIR = Path(__file__).resolve().parent.parent
-        signal = pd.read_csv(BASE_DIR / 'data' / filename, names=['time', 'ml2', 'v5'])
+        signal = pd.read_csv(BASE_DIR / 'data' / filename, names=['time', 'ml2', 'v5'], dtype='unicode')
         # drop the bad data
         signal = signal.drop([0, 1])
         # set the correct types
