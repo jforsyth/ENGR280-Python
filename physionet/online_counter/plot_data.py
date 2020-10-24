@@ -110,9 +110,9 @@ class DataVis():
 
     def update_heartbeat_count(self):
         if len(self.filter_data) > self.RANGE:
-            last_filter_point = self.filter_data[10]
+            last_filter_point = self.filter_data[100]
 
-            if last_filter_point > 0.02 and self.points_since_last_heartbeat > math.ceil((self.sampling_rate / self.MS_PER_S) * self.HEART_MIN_REFACTORY_PERIOD):
+            if last_filter_point > 0.03 and self.points_since_last_heartbeat > math.ceil((self.sampling_rate / self.MS_PER_S) * self.HEART_MIN_REFACTORY_PERIOD):
                 self.heartbeat_counter += 1
                 self.points_since_last_heartbeat = 0
                 print(f"*beep* {self.heartbeat_counter}")
