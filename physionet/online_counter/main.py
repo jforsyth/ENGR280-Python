@@ -1,14 +1,24 @@
 from plot_data import DataVis
 from live_data_simulator import DataSimulator
-from multiprocessing import Process, Queue
+import multiprocessing as mp
 
 SAMPLING_RATE = 250 #hz
 
-data_sim = DataSimulator()
-data_vis = DataVis()
 
 if __name__ == '__main__':
-    q = Queue()
-    p1 = Process(target=data_sim.start, args=(q, SAMPLING_RATE))
+    # Queue to use between data simulator and grapher
+    q = mp.Queue()
+    
+    data_sim = DataSimulator('samples.csv')
+
+    # Starts async process of appending "live" data to queue
+    p1 = mp.Process(target=data_sim.start, args=(q, SAMPLING_RATE))
     p1.start()
-    data_vis.read_data_loop(q, SAMPLING_RATE)
+
+    # Plots data from queue based on sample rate given
+    data_vis = DataVis(q, SAMPLING_RATE)
+    data_vis.start()
+
+    # Terminates and joins async process back
+    p1.terminate()
+    p1.join()
