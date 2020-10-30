@@ -10,7 +10,7 @@ class DataVis():
 
     RANGE = 500
     MS_PER_S = 1000 # milliseconds
-    HEART_MIN_REFACTORY_PERIOD = 250 # milliseconds
+    HEART_MIN_REFACTORY_PERIOD = 250 # milliseconds (absolute minimum heartbeat length)
 
     def __init__(self, queue, rate):
         self.win = pg.GraphicsLayoutWidget(show=True)
@@ -21,8 +21,16 @@ class DataVis():
         self.plot1 = self.win.addPlot()
         self.plot2 = self.win.addPlot()
 
+        self.plot1.setXRange(0, self.RANGE)
+        self.plot1.setYRange(-2, 2)
+        self.plot2.setXRange(0, self.RANGE)
+        self.plot2.setYRange(-0.2, 0.2)
+
         # Create an empty np array to append data to
         self.data = np.empty(0) 
+
+        # Create empty maxima array
+        self.maxima_data= [] 
 
         # Set queue to multiprocess queue input
         self.queue = queue 
@@ -32,21 +40,30 @@ class DataVis():
         self.Y = np.linspace(0, 3, 3)
 
         pen = pg.mkPen(color=(141, 252, 93), width=3)
+        pen2 = pg.mkPen(color=(255, 0, 0), width=3)
 
         # Set curves to plot on graph
         self.curve1 = self.plot1.plot(self.X, self.Y, pen=pen)
         self.curve2 = self.plot2.plot(self.X, self.Y, pen=pen)
+        self.curve3 = self.plot2.plot([self.RANGE/2 - 32, self.RANGE/2 - 32], [-1, 1], pen=pen2)
+        self.curve4 = self.plot2.plot([self.RANGE/2 + 32, self.RANGE/2 + 32], [-1, 1], pen=pen2)
+
+        self.scatter = pg.ScatterPlotItem(size=10, brush=pg.mkBrush(255, 255, 255, 120)) 
+        self.scatter1 = self.plot2.addItem(self.scatter)
 
         # Set refresh rate of graph to 1sec / sample rate
         self.timer = pg.QtCore.QTimer()
         self.timer.timeout.connect(self.update)
-        self.timer.start(1 / rate)
+        self.timer.start(10)#1 / rate)
+
+        self.sampling_rate = rate
 
         self.count = 0
         self.heartbeat_counter = 0
         self.points_since_last_heartbeat = 0
+        self.points_between_heartbeats = math.ceil((self.sampling_rate / self.MS_PER_S) 
+            * self.HEART_MIN_REFACTORY_PERIOD)
 
-        self.sampling_rate = rate
 
     def update(self):
         """
@@ -55,7 +72,8 @@ class DataVis():
         self.update_data()
         self.update_curve_1()
         self.update_curve_2()
-        self.update_heartbeat_count()
+        #self.update_maxima()
+        #self.update_heartbeat_count()
 
         ''' USE FOR DEBUGGING TIME ISSUES
         self.count += 1
@@ -77,6 +95,17 @@ class DataVis():
         # Appends last queue item to data
         self.data = np.append(self.data, next_point)
 
+        self.left_data = self.data[int(self.RANGE / 2) - math.ceil(self.points_between_heartbeats / 2) : int(self.RANGE / 2)]
+        self.right_data = self.data[int(self.RANGE / 2) + 1 : int(self.RANGE / 2) + math.ceil(self.points_between_heartbeats / 2) + 1]
+
+        self.is_maxima = False
+
+        try:
+            if self.data[int(self.RANGE / 2)] > max(self.left_data) and self.data[int(self.RANGE / 2)] > max(self.right_data):
+                self.is_maxima = True
+        except:
+            pass
+
 
     def update_curve_1(self):
         """
@@ -88,7 +117,6 @@ class DataVis():
         self.X = np.linspace(0, length, length)
         self.Y = self.data
 
-        self.plot1.setXRange(0, self.RANGE)
 
         # Update graph data
         self.curve1.setData(self.X, self.Y)
@@ -103,16 +131,31 @@ class DataVis():
         length = len(self.filter_data)
         X = np.linspace(0, length, length)
 
-        self.plot2.setXRange(0, self.RANGE)
 
         # Update graph data
         self.curve2.setData(X, self.filter_data)
 
+    def update_maxima(self):
+        """
+        Update positions of graphed local maxima 
+        """
+        if self.is_maxima:
+            # Update maxima data
+            self.maxima_data.append([int(self.RANGE/2), self.filter_data[int(self.RANGE/2)]])
+
+
+        print(self.maxima_data)
+        #self.scatter.setData(self.maxima_data)
+
+        # Update graph data
+        #self.curve2.setData(X, self.filter_data)
+
     def update_heartbeat_count(self):
         if len(self.filter_data) > self.RANGE:
-            last_filter_point = self.filter_data[100]
+            last_filter_point = self.filter_data[int(self.RANGE / 2)]
 
-            if last_filter_point > 0.03 and self.points_since_last_heartbeat > math.ceil((self.sampling_rate / self.MS_PER_S) * self.HEART_MIN_REFACTORY_PERIOD):
+
+            if last_filter_point > 0.03 and self.points_since_last_heartbeat > self.points_between_heartbeats:
                 self.heartbeat_counter += 1
                 self.points_since_last_heartbeat = 0
                 print(f"*beep* {self.heartbeat_counter}")
