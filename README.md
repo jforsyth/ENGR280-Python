@@ -6,3 +6,7 @@ An introduction to Python and its applications within the larger engineering fie
 **diagnostics**: folder containing basic diagnostic tasks to assess ability with the Python language
 
 **covid-data**: first culminating assignment to show ability to parse data in Python
+
+**physionet**: heart beat detection using ECG data from Physionet
+
+**step-count**: step counting and walking detection from a smartphone in various orientations
