@@ -8,7 +8,7 @@ from multiprocessing import Process, Queue
 
 class DataVis():
 
-    RANGE = 500
+    RANGE = 500 # range of points to analyze (width of graph) 
     MS_PER_S = 1000 # milliseconds
     HEART_MIN_REFACTORY_PERIOD = 250 # milliseconds (absolute minimum heartbeat length)
 
@@ -21,6 +21,7 @@ class DataVis():
         self.plot1 = self.win.addPlot()
         self.plot2 = self.win.addPlot()
 
+        # Set X and Y limits on graph
         self.plot1.setXRange(0, self.RANGE)
         self.plot1.setYRange(-2, 2)
         self.plot2.setXRange(0, self.RANGE)
@@ -30,7 +31,7 @@ class DataVis():
         self.data = np.empty(0) 
 
         # Create empty maxima array
-        self.maxima_data= [] 
+        self.maxima_data = np.empty(0) 
 
         # Set queue to multiprocess queue input
         self.queue = queue 
@@ -39,14 +40,17 @@ class DataVis():
         self.X = np.linspace(0, 3, 3)
         self.Y = np.linspace(0, 3, 3)
 
+        # Green pen
         pen = pg.mkPen(color=(141, 252, 93), width=3)
+
+        # Red pen
         pen2 = pg.mkPen(color=(255, 0, 0), width=3)
 
         # Set curves to plot on graph
         self.curve1 = self.plot1.plot(self.X, self.Y, pen=pen)
         self.curve2 = self.plot2.plot(self.X, self.Y, pen=pen)
-        self.curve3 = self.plot2.plot([self.RANGE/2 - 32, self.RANGE/2 - 32], [-1, 1], pen=pen2)
-        self.curve4 = self.plot2.plot([self.RANGE/2 + 32, self.RANGE/2 + 32], [-1, 1], pen=pen2)
+        # self.curve3 = self.plot2.plot([self.RANGE/2 - 32, self.RANGE/2 - 32], [-1, 1], pen=pen2)
+        # self.curve4 = self.plot2.plot([self.RANGE/2 + 32, self.RANGE/2 + 32], [-1, 1], pen=pen2)
 
         self.scatter = pg.ScatterPlotItem(size=10, brush=pg.mkBrush(255, 255, 255, 120)) 
         self.scatter1 = self.plot2.addItem(self.scatter)
@@ -54,13 +58,16 @@ class DataVis():
         # Set refresh rate of graph to 1sec / sample rate
         self.timer = pg.QtCore.QTimer()
         self.timer.timeout.connect(self.update)
-        self.timer.start(10)#1 / rate)
+        self.timer.start(1 / rate)
 
+        # Sampling rate of file
         self.sampling_rate = rate
 
         self.count = 0
         self.heartbeat_counter = 0
         self.points_since_last_heartbeat = 0
+
+        # Min points between heartbeats based on heart refractory period
         self.points_between_heartbeats = math.ceil((self.sampling_rate / self.MS_PER_S) 
             * self.HEART_MIN_REFACTORY_PERIOD)
 
@@ -141,10 +148,9 @@ class DataVis():
         """
         if self.is_maxima:
             # Update maxima data
-            self.maxima_data.append([int(self.RANGE/2), self.filter_data[int(self.RANGE/2)]])
+            self.maxima_data = np.append(self.maxima_data, np.array([[int(self.RANGE/2), self.filter_data[int(self.RANGE/2)]]]), axis=0)
+            print(self.maxima_data)
 
-
-        print(self.maxima_data)
         #self.scatter.setData(self.maxima_data)
 
         # Update graph data
