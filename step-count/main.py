@@ -13,6 +13,6 @@ if len(sys.argv) == 1:
 
 data = WalkingData(sys.argv[1])
 
-print(f"Steps Counted from Walking Clusters: {data.get_steps(plot=True)}")
+print(f"Steps Counted from Walking Clusters: {data.get_steps()}")
 
 plt.show()
